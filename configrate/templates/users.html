@@ -2,24 +2,131 @@
 
 {% block content %}
 
-<table id="example" class="display" style="width:100%">
-  <thead>
-    <tr>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Username</th>
-    </tr>
-  </thead>
+<div x-data="studentCrud()">
+  <table id="example" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Username</th>
+        <th>Action</th>
+      </tr>
+    </thead>
 
-</table>
-
+    <tbody>
+      <template x-for="(student,index) in students" :key="index">
+        <tr>
+          <td x-text="student.firstname"></td>
+          <td x-text="student.lasttname"></td>
+          <td x-text="student.email"></td>
+          <td>
+            <button @click.prevent="editData(student,index)" class="btn btn-info">Edit</button>
+            <button @click.prevent="deleteData(index)" class="btn btn-danger">Delete</button>
+          </td>
+        </tr>
+      </template>
+    </tbody>
+  </table>
+  <form @submit.prevent="saveData" x-show="addMode">
+    <div>
+      <label>First Name</label>
+      <input x-model="form.firstname" type="text" placeholder="Enter First Name">
+    </div>
+    <div>
+      <label>last Name</label>
+      <input x-model="form.lasttname" type="text" placeholder="Enter Last Name">
+    </div>
+    <div>
+      <label>Email</label>
+      <input x-model="form.email" type="text" placeholder="Enter Email">
+    </div>
+    <div>
+      <button type="submit">Save</button>
+    </div>
+  </form>
+  <form @submit.prevent="updateData" x-show="!addMode">
+    <div>
+      <label>First Name</label>
+      <input x-model="form.firstname" type="text" placeholder="Enter First Name">
+    </div>
+    <div>
+      <label>last Name</label>
+      <input x-model="form.lasttname" type="text" placeholder="Enter Last Name">
+    </div>
+    <div>
+      <label>Email</label>
+      <input x-model="form.email" type="text" placeholder="Enter Email">
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary">Update</button>
+      <button type="button" class="btn btn-danger" @click.prevent="cancelEdit">Cancel Edit</button>
+    </div>
+  </form>
+</div>
 {% endblock content %}
 
 {% block script %}
 <script>
-  $(document).ready(function () {
-    $('#example').DataTable();
-  });
+  // $(document).ready(function () {
+  //   $('#example').DataTable();
+  // });
+
+  function studentCrud() {
+    return {
+      addMode: true,
+      id: '',
+      form: {
+        firstname: '',
+        lasttname: '',
+        email: '',
+      },
+      students: [{
+        firstname: 'احمد',
+        lasttname: 'علي',
+        email: 'test@mail.com'
+      }],
+      saveData() {
+        // if (this.form.name.length && this.form.email.length) {
+        this.students.push({
+          firstname: this.form.firstname,
+          lasttname: this.form.lasttname,
+          email: this.form.email
+        })
+        this.resetForm()
+        // }
+      },
+      editData(student, index) {
+        this.addMode = false
+        this.form.firstname = student.firstname
+        this.form.lasttname = student.lasttname
+        this.form.email = student.email
+        this.id = index
+      },
+      updateData() {
+        // if (this.form.name.length && this.form.email.length) {
+        this.students.splice(this.id, 1, {
+          firstname: this.form.firstname,
+          lasttname: this.form.lasttname,
+          email: this.form.email,
+        })
+        this.resetForm()
+        // }
+      },
+      deleteData(index) {
+        this.students.splice(index, 1)
+      },
+      cancelEdit() {
+        this.resetForm()
+      },
+      resetForm() {
+        this.form.firstname = ''
+        this.form.lasttname = ''
+        this.form.email = ''
+        this.addMode = true
+      }
+    }
+  }
+
 </script>
 
 {% endblock script %}
