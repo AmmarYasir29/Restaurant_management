@@ -5,7 +5,7 @@ static/
 .vscode
 AdminLTE-3-RTL/
 venv/
-
+.idea
 ### OSX ###
 .DS_Store
 .AppleDouble

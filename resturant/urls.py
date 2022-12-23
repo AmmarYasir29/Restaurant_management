@@ -19,6 +19,6 @@ from . import view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', view.index, name='index'),
+    # path('', view.index, name='index'),
     path('', include("configrate.urls"), name='index'),
 ]
